@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31710.8
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Suity.Engine", "Suity.Engine\Suity.Engine.csproj", "{96B4C97B-1FA0-467D-B435-344E58A1F668}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Suity", "Suity\Suity.csproj", "{901178CE-6097-48CC-BF30-EA61115ABE8F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		LoginDebug|Any CPU = LoginDebug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{96B4C97B-1FA0-467D-B435-344E58A1F668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96B4C97B-1FA0-467D-B435-344E58A1F668}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96B4C97B-1FA0-467D-B435-344E58A1F668}.LoginDebug|Any CPU.ActiveCfg = LoginDebug|Any CPU
+		{96B4C97B-1FA0-467D-B435-344E58A1F668}.LoginDebug|Any CPU.Build.0 = LoginDebug|Any CPU
+		{96B4C97B-1FA0-467D-B435-344E58A1F668}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96B4C97B-1FA0-467D-B435-344E58A1F668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{901178CE-6097-48CC-BF30-EA61115ABE8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{901178CE-6097-48CC-BF30-EA61115ABE8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{901178CE-6097-48CC-BF30-EA61115ABE8F}.LoginDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{901178CE-6097-48CC-BF30-EA61115ABE8F}.LoginDebug|Any CPU.Build.0 = Debug|Any CPU
+		{901178CE-6097-48CC-BF30-EA61115ABE8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{901178CE-6097-48CC-BF30-EA61115ABE8F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {06180CE6-0B29-48DA-8574-DCDE5467F8C8}
+	EndGlobalSection
+EndGlobal

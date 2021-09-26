@@ -1,0 +1,211 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{96B4C97B-1FA0-467D-B435-344E58A1F668}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Suity</RootNamespace>
+    <AssemblyName>Suity.Engine</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>..\..\..\Suity4\SourceCode\SuityRuleSet.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'LoginDebug|AnyCPU'">
+    <OutputPath>bin\LoginDebug\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AutoDiscovery\BaseAutoDiscoveryModuleProvider.cs" />
+    <Compile Include="AutoDiscovery\EmptyServiceResolveFuture.cs" />
+    <Compile Include="AutoDiscovery\IAutoDiscovery.cs" />
+    <Compile Include="AutoDiscovery\IServiceDiscoveryClient.cs" />
+    <Compile Include="AutoDiscovery\IServiceDiscoveryHost.cs" />
+    <Compile Include="AutoDiscovery\IServiceLocationProvider.cs" />
+    <Compile Include="AutoDiscovery\IServiceResolveFuture.cs" />
+    <Compile Include="AutoDiscovery\LocalServiceDiscoveryCollection.cs" />
+    <Compile Include="AutoDiscovery\ServiceCode.cs" />
+    <Compile Include="AutoDiscovery\ServiceDiscoveryModule.cs" />
+    <Compile Include="AutoDiscovery\ServiceLocation.cs" />
+    <Compile Include="AutoDiscovery\ServiceLocationEventArgs.cs" />
+    <Compile Include="AutoDiscovery\ServiceResolve.cs" />
+    <Compile Include="AutoDiscovery\ServiceResolveResultFuture.cs" />
+    <Compile Include="Clustering\IGlobalClusterInfo.cs" />
+    <Compile Include="Engine.Security\RemotingAuthProvider.cs" />
+    <Compile Include="Engine.Security\RemotingAuthRequester.cs" />
+    <Compile Include="Engine.Security\RemotingOperationLogProvider.cs" />
+    <Compile Include="Engine.Security\RemotingOperationLogRequester.cs" />
+    <Compile Include="Engine\BaseModuleProvider.cs" />
+    <Compile Include="Engine\CommandNotImplementedException.cs" />
+    <Compile Include="Engine\ConsoleCommands.cs" />
+    <Compile Include="Engine\IEntityLog.cs" />
+    <Compile Include="Engine\IOperationLog.cs" />
+    <Compile Include="Engine\IResourceLog.cs" />
+    <Compile Include="Engine\IStellarService.cs" />
+    <Compile Include="Engine\MessageQueue.cs" />
+    <Compile Include="Engine\ModuleBindingNames.cs" />
+    <Compile Include="Engine\NetworkGroupUser.cs" />
+    <Compile Include="Engine\NetworkUser.cs" />
+    <Compile Include="Engine\VersionConfig.cs" />
+    <Compile Include="Engine\StartInfos.cs" />
+    <Compile Include="Engine\ComponentStartException.cs" />
+    <Compile Include="Engine\DataRef.cs" />
+    <Compile Include="Engine\IDataResource.cs" />
+    <Compile Include="Engine\ArrayInstance.cs" />
+    <Compile Include="Engine\ModuleBindException.cs" />
+    <Compile Include="Engine\ModuleConfig.cs" />
+    <Compile Include="Engine\Module.cs" />
+    <Compile Include="Engine\IModuleBinding.cs" />
+    <Compile Include="Engine\IModuleProvider.cs" />
+    <Compile Include="Engine\InvalidModuleBindingException.cs" />
+    <Compile Include="Engine\IRuntimeLog.cs" />
+    <Compile Include="Engine\NodeApplication.cs" />
+    <Compile Include="Engine\NodeComponent.cs" />
+    <Compile Include="Engine\NodeObject.cs" />
+    <Compile Include="Engine\NodeServiceAttribute.cs" />
+    <Compile Include="Engine\NodeTriggerAttribute.cs" />
+    <Compile Include="Engine\NodeObjectState.cs" />
+    <Compile Include="Engine\AssetRef.cs" />
+    <Compile Include="Engine\StringConfig.cs" />
+    <Compile Include="Helpers\NetworkHelper.cs" />
+    <Compile Include="Networking\BaseRemotingProvider.cs" />
+    <Compile Include="Networking\BaseRemotingRequester.cs" />
+    <Compile Include="Networking\ClientSocketComponent.cs" />
+    <Compile Include="Networking\CommandHandlerComponent.cs" />
+    <Compile Include="Networking\DataCacheComponent.cs" />
+    <Compile Include="Networking\EventArgs.cs" />
+    <Compile Include="Networking\HttpHandlerComponent.cs" />
+    <Compile Include="Networking\HttpRequestComponent.cs" />
+    <Compile Include="Networking\HttpServiceComponent.cs" />
+    <Compile Include="Networking\KeepAliveModes.cs" />
+    <Compile Include="Networking\NetworkCommand.cs" />
+    <Compile Include="Networking\NetworkCommandFamily.cs" />
+    <Compile Include="Networking\NetworkServer.cs" />
+    <Compile Include="Networking\NetworkSession.cs" />
+    <Compile Include="Networking\NetworkSessionKeepAliveManager.cs" />
+    <Compile Include="Networking\Results.cs" />
+    <Compile Include="Networking\IBehaviorLog.cs" />
+    <Compile Include="Networking\IDataCache.cs" />
+    <Compile Include="Networking\IDataStorage.cs" />
+    <Compile Include="Networking\INetworkAuthentication.cs" />
+    <Compile Include="Networking\INetworkCommandHandler.cs" />
+    <Compile Include="Networking\INetworkGroupAuthority.cs" />
+    <Compile Include="Networking\INetworkOperationLog.cs" />
+    <Compile Include="Networking\IPConfig.cs" />
+    <Compile Include="Networking\MessageQueueComponent.cs" />
+    <Compile Include="Networking\NetworkConfigs.cs" />
+    <Compile Include="Networking\NonBehaviorLogAttribute.cs" />
+    <Compile Include="Networking\PortConfig.cs" />
+    <Compile Include="Networking\ServerSocketComponent.cs" />
+    <Compile Include="Networking\SessionAutoKickComponent.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reflecting\ActivatorHelper.cs" />
+    <Compile Include="Reflecting\AssemblyShortTypeName.cs" />
+    <Compile Include="Reflecting\BindingFlagsPreset.cs" />
+    <Compile Include="Reflecting\TypeInfoString.cs" />
+    <Compile Include="Reflecting\TypeResolveHelper.cs" />
+    <Compile Include="RoomSystem\BackgroundActionQueue.cs" />
+    <Compile Include="RoomSystem\Room.cs" />
+    <Compile Include="RoomSystem\RoomExtensions.cs" />
+    <Compile Include="Helpers\SingleThreadActionQueue.cs" />
+    <Compile Include="RoomSystem\SimpleRoomComponent.cs" />
+    <Compile Include="Synchonizing.Core\Cloner.cs" />
+    <Compile Include="Synchonizing.Core\ClonerSyncs.cs" />
+    <Compile Include="Synchonizing.Core\DefaultSyncTypeResolver.cs" />
+    <Compile Include="Synchonizing.Core\Equality.cs" />
+    <Compile Include="Synchonizing.Core\FindOption.cs" />
+    <Compile Include="Synchonizing.Core\GenericListProxy.cs" />
+    <Compile Include="Synchonizing.Core\IListItemNotify.cs" />
+    <Compile Include="Synchonizing.Core\ISerializeAsString.cs" />
+    <Compile Include="Synchonizing.Core\ISyncPathIdObject.cs" />
+    <Compile Include="Synchonizing.Core\ISyncPathObject.cs" />
+    <Compile Include="Synchonizing.Core\ISyncStateRecord.cs" />
+    <Compile Include="Synchonizing.Core\ISyncTypeResolver.cs" />
+    <Compile Include="Synchonizing.Core\IValidate.cs" />
+    <Compile Include="Synchonizing.Core\Member.cs" />
+    <Compile Include="Synchonizing.Core\Serializer.cs" />
+    <Compile Include="Synchonizing.Core\SerializerSyncs.cs" />
+    <Compile Include="Synchonizing.Core\SyncListProxy.cs" />
+    <Compile Include="Synchonizing.Core\SyncObjectProxy.cs" />
+    <Compile Include="Synchonizing.Core\SyncPath.cs" />
+    <Compile Include="Synchonizing.Core\SyncPathBuilder.cs" />
+    <Compile Include="Synchonizing.Core\SyncPathReportItem.cs" />
+    <Compile Include="Synchonizing.Core\SyncProxyUsageAttribute.cs" />
+    <Compile Include="Synchonizing.Core\SyncTypeExtensions.cs" />
+    <Compile Include="Synchonizing.Core\TypeResolveException.cs" />
+    <Compile Include="Synchonizing.Core\ValidationContext.cs" />
+    <Compile Include="Synchonizing.Core\Validator.cs" />
+    <Compile Include="Synchonizing.Core\VisitFlag.cs" />
+    <Compile Include="Synchonizing.Core\Visitor.cs" />
+    <Compile Include="Synchonizing.Core\XmlSerializer.cs" />
+    <Compile Include="Synchonizing.Preset\DeserializeSyncTypeResolver.cs" />
+    <Compile Include="Synchonizing.Preset\EmptySyncList.cs" />
+    <Compile Include="Synchonizing.Preset\EmptySyncObject.cs" />
+    <Compile Include="Synchonizing.Preset\EmptyTypeResolver.cs" />
+    <Compile Include="Synchonizing.Preset\GetAllIndexSync.cs" />
+    <Compile Include="Synchonizing.Preset\GetAllPropertySync.cs" />
+    <Compile Include="Synchonizing.Preset\GetFieldsPropertySync.cs" />
+    <Compile Include="Synchonizing.Preset\InitializeIndexSync.cs" />
+    <Compile Include="Synchonizing.Preset\InitializePropertySync.cs" />
+    <Compile Include="Synchonizing.Preset\ReadonlySyncList.cs" />
+    <Compile Include="Synchonizing.Preset\SingleAttributeSync.cs" />
+    <Compile Include="Synchonizing.Preset\SingleIndexSync.cs" />
+    <Compile Include="Synchonizing.Preset\SingleIndexSyncExtensions.cs" />
+    <Compile Include="Synchonizing.Preset\SinglePropertySync.cs" />
+    <Compile Include="Synchonizing.Preset\SinglePropertySyncExtensions.cs" />
+    <Compile Include="Synchonizing.Preset\SyncContext.cs" />
+    <Compile Include="Synchonizing.Preset\SyncList.cs" />
+    <Compile Include="Synchonizing.Preset\SyncValueInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Suity\Suity.csproj">
+      <Project>{901178ce-6097-48cc-bf30-ea61115abe8f}</Project>
+      <Name>Suity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_StartDate="2000/1/1" BuildVersion_UseGlobalSettings="True" BuildVersion_DetectChanges="False" Reactor_Enabled="0" Reactor_Commands="" Reactor_Project="" Reactor_Configuration="ALL" Reactor_Output="" Reactor_Deploy="0" />
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
