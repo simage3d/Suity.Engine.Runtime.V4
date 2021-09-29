@@ -79,13 +79,12 @@ namespace Suity.Networking
         public IPEndPoint EndPoint => _endPoint;
         public IPEndPoint LastEndPoint => _lastEndPoint;
 
-        public bool TryReconnect { get; set; } = true;
         public abstract bool IsConnected { get; }
         public bool IsSignalWeak
         {
             get
             {
-                if (TryReconnect && !IsConnected)
+                if (_reconnectEnabled && !IsConnected)
                 {
                     return true;
                 }
@@ -301,7 +300,7 @@ namespace Suity.Networking
             if (timeOut)
             {
                 Close("Time out");
-                if (_reconnectEnabled && TryReconnect)
+                if (_reconnectEnabled)
                 {
                     OnReconnectRequested(StatusCodes.TimeOut);
                 }
@@ -502,7 +501,7 @@ namespace Suity.Networking
             if (timeout)
             {
                 Close($"Channel {channel} time out");
-                if (_reconnectEnabled && TryReconnect)
+                if (_reconnectEnabled)
                 {
                     OnReconnectRequested(StatusCodes.TimeOut);
                 }
@@ -643,7 +642,7 @@ namespace Suity.Networking
 
             Closed?.Invoke(this, EventArgs.Empty);
 
-            if (_reconnectEnabled && TryReconnect)
+            if (_reconnectEnabled)
             {
                 OnReconnectRequested(StatusCodes.ConnectionClosed);
             }
@@ -659,7 +658,7 @@ namespace Suity.Networking
 
             Close("Client error");
 
-            if (_reconnectEnabled && TryReconnect)
+            if (_reconnectEnabled)
             {
                 if (_logErrorEvent)
                 {
