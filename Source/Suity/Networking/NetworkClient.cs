@@ -205,7 +205,7 @@ namespace Suity.Networking
                 //}
             }
         }
-        private void Reconnect()
+        protected void Reconnect()
         {
             lock (_lock)
             {
