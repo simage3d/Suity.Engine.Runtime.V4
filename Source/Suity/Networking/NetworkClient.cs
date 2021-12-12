@@ -33,9 +33,9 @@ namespace Suity.Networking
         private IPEndPoint _endPoint;
         private IPEndPoint _lastEndPoint;
 
-        //连接断开时是否重新连接
-        bool _disconnectTriggerReconnect;
-        //连接成功后时候作为一个重连接事件
+        // 连接断开时是否重新连接
+        bool _reconnectEnabled;
+        // 连接成功后时候作为一个重连接事件
         bool _reconnecting;
         int _retryTimes;
         bool _isWeak;
@@ -68,7 +68,7 @@ namespace Suity.Networking
         public bool DisableUpdater { get; set; }
         public PacketFormatter Formatter
         {
-            get { return _formatter; }
+            get => _formatter;
             set
             {
                 _formatter = value;
@@ -79,13 +79,12 @@ namespace Suity.Networking
         public IPEndPoint EndPoint => _endPoint;
         public IPEndPoint LastEndPoint => _lastEndPoint;
 
-        public bool TryReconnect { get; set; } = true;
         public abstract bool IsConnected { get; }
         public bool IsSignalWeak
         {
             get
             {
-                if (TryReconnect && !IsConnected)
+                if (_reconnectEnabled && !IsConnected)
                 {
                     return true;
                 }
@@ -102,13 +101,13 @@ namespace Suity.Networking
 
         public bool LogEvent
         {
-            get { return _logEvent; }
-            set { _logEvent = value; }
+            get => _logEvent;
+            set => _logEvent = value;
         }
         public bool LogErrorEvent
         {
-            get { return _logErrorEvent; }
-            set { _logErrorEvent = value; }
+            get => _logErrorEvent;
+            set => _logErrorEvent = value;
         }
 
 
@@ -206,7 +205,7 @@ namespace Suity.Networking
                 //}
             }
         }
-        private void Reconnect()
+        protected void Reconnect()
         {
             lock (_lock)
             {
@@ -228,10 +227,10 @@ namespace Suity.Networking
 
                 CleanUp();
 
-                _disconnectTriggerReconnect = false;
+                _reconnectEnabled = false;
                 ClientDisconnect("Reconnect");
 
-                _disconnectTriggerReconnect = true;
+                _reconnectEnabled = true;
                 _reconnecting = true;
                 _retryTimes++;
                 ClientConnect(_endPoint, true);
@@ -253,12 +252,13 @@ namespace Suity.Networking
         }
         public void HealthCheck()
         {
+            DateTime now = DateTime.UtcNow;
+
+            bool weak = false;
+            bool timeOut = false;
+
             lock (_lock)
             {
-                DateTime now = DateTime.UtcNow;
-
-                bool weak = false;
-
                 for (int i = 0; i < _sendFutures.Length; i++)
                 {
                     var send = _sendFutures[i];
@@ -274,14 +274,14 @@ namespace Suity.Networking
                         {
                             if (_logEvent)
                             {
-                                AddLog(LogMessageType.Warning, $"[{Name}] channel {i} time out, reconnecting...");
+                                AddLog(LogMessageType.Warning, $"[{Name}] channel {i} time out.");
                             }
 
-                            Reconnect();
-                            break;
+                            timeOut = true;
                         }
                     }
                 }
+
                 _isWeak = weak;
 
                 double secconds = (now - _lastHealthCheck).TotalSeconds;
@@ -295,6 +295,15 @@ namespace Suity.Networking
 
                 _numBytesSent = 0;
                 _numBytesReceived = 0;
+            }
+
+            if (timeOut)
+            {
+                Close("Time out");
+                if (_reconnectEnabled)
+                {
+                    OnReconnectRequested(StatusCodes.TimeOut);
+                }
             }
         }
         public IFuture Connect(string ip, int port)
@@ -342,7 +351,7 @@ namespace Suity.Networking
                 {
                     _connectFuture = new ConnectFuture();
                 }
-                _disconnectTriggerReconnect = true;
+                _reconnectEnabled = true;
 
                 ClientConnect(endPoint, false);
                 return _connectFuture;
@@ -362,7 +371,7 @@ namespace Suity.Networking
 
                 IsStarted = false;
 
-                _disconnectTriggerReconnect = false;
+                _reconnectEnabled = false;
                 _reconnecting = false;
                 _retryTimes = 0;
 
@@ -419,65 +428,86 @@ namespace Suity.Networking
                 method = NetworkDeliveryMethods.ReliableOrdered;
             }
 
+            IFuture<TResult> result = null;
+            bool timeout = false;
+
             lock (_lock)
             {
-                if (!IsConnected)
+                do
                 {
-                    if (_logEvent)
-                    {
-                        AddNetworkLog(LogMessageType.Warning, NetworkDirection.None, method, channel, $"[{Name}] send {obj.GetType().Name} Channel={channel}, but connection is closed.");
-                    }
-                    return new ErrorFuture<TResult>(new ErrorResult
-                    {
-                        StatusCode = nameof(StatusCodes.ConnectionClosed),
-                        Location = Suity.Environment.Location,
-                    });
-                }
-                if (method == NetworkDeliveryMethods.ReliableOrdered && channel < _sendFutures.Length && _sendFutures[channel] != null)
-                {
-                    if (_logErrorEvent)
-                    {
-                        AddNetworkLog(LogMessageType.Error, NetworkDirection.None, method, channel, $"[{Name}] send {obj.GetType().Name} Channel={channel}, but channel is not idle.");
-                    }
-                    TimeSpan sendTimeSpan = DateTime.UtcNow - _sendFutures[channel].SendTime;
-                    if (sendTimeSpan > ChannelTimeOutSpan)
+                    if (!IsConnected)
                     {
                         if (_logEvent)
                         {
-                            AddNetworkLog(LogMessageType.Info, NetworkDirection.None, method, channel, $"[{Name}] channel {channel} time out, reconnecting...");
+                            AddNetworkLog(LogMessageType.Warning, NetworkDirection.None, method, channel, $"[{Name}] send {obj.GetType().Name} Channel={channel}, but connection is closed.");
                         }
-                        Close($"Channel {channel} time out");
-                        Reconnect();
+                        result = new ErrorFuture<TResult>(new ErrorResult
+                        {
+                            StatusCode = nameof(StatusCodes.ConnectionClosed),
+                            Location = Suity.Environment.Location,
+                        });
+                        break;
                     }
-                    return new ErrorFuture<TResult>(new ErrorResult
+
+                    if (method == NetworkDeliveryMethods.ReliableOrdered && channel < _sendFutures.Length && _sendFutures[channel] != null)
                     {
-                        StatusCode = nameof(StatusCodes.ChannelNotIdle),
-                        Location = Suity.Environment.Location,
-                    });
-                }
+                        if (_logErrorEvent)
+                        {
+                            AddNetworkLog(LogMessageType.Error, NetworkDirection.None, method, channel, $"[{Name}] send {obj.GetType().Name} Channel={channel}, but channel is not idle.");
+                        }
+                        TimeSpan sendTimeSpan = DateTime.UtcNow - _sendFutures[channel].SendTime;
+                        if (sendTimeSpan > ChannelTimeOutSpan)
+                        {
+                            if (_logEvent)
+                            {
+                                AddNetworkLog(LogMessageType.Info, NetworkDirection.None, method, channel, $"[{Name}] channel {channel} time out.");
+                            }
+                            timeout = true;
+                        }
+                        result = new ErrorFuture<TResult>(new ErrorResult
+                        {
+                            StatusCode = nameof(StatusCodes.ChannelNotIdle),
+                            Location = Suity.Environment.Location,
+                        });
+                        break;
+                    }
 
-                if (_logEvent)
+                    if (_logEvent)
+                    {
+                        AddNetworkLog(LogMessageType.Info, NetworkDirection.Upload, method, channel, obj);
+                    }
+
+                    _buffer.Reset();
+                    ClientSendMessage(obj, method, channel);
+
+                    if (method == NetworkDeliveryMethods.ReliableOrdered && channel < _sendFutures.Length)
+                    {
+                        SendFuture<TResult> future = new SendFuture<TResult>(obj, Suity.Environment.Location);
+
+                        _sendFutures[channel] = future;
+                        _sendTimes[channel] = DateTime.UtcNow;
+                        ChannelSending?.Invoke(this, new ChannelPackageEventArgs(obj, channel));
+                        result = future;
+                        break;
+                    }
+                    else
+                    {
+                        result = EmptyFuture<TResult>.Empty;
+                        break;
+                    }
+                } while (false);
+            }
+
+            if (timeout)
+            {
+                Close($"Channel {channel} time out");
+                if (_reconnectEnabled)
                 {
-                    AddNetworkLog(LogMessageType.Info, NetworkDirection.Upload, method, channel, obj);
-                }
-
-                _buffer.Reset();
-                ClientSendMessage(obj, method, channel);
-
-                if (method == NetworkDeliveryMethods.ReliableOrdered && channel < _sendFutures.Length)
-                {
-                    SendFuture<TResult> future = new SendFuture<TResult>(obj, Suity.Environment.Location);
-
-                    _sendFutures[channel] = future;
-                    _sendTimes[channel] = DateTime.UtcNow;
-                    ChannelSending?.Invoke(this, new ChannelPackageEventArgs(obj, channel));
-                    return future;
-                }
-                else
-                {
-                    return EmptyFuture<TResult>.Empty;
+                    OnReconnectRequested(StatusCodes.TimeOut);
                 }
             }
+
+            return result;
         }
 
         protected void ReportDataTraffic(NetworkDirection direction, int numBytes)
@@ -564,6 +594,11 @@ namespace Suity.Networking
 
         }
 
+        protected virtual void OnReconnectRequested(StatusCodes status)
+        {
+            Reconnect();
+        }
+
         #endregion
 
         #region To notify
@@ -603,11 +638,13 @@ namespace Suity.Networking
             lock (_lock)
             {
                 CleanUp();
-                Closed?.Invoke(this, EventArgs.Empty);
             }
-            if (_disconnectTriggerReconnect && TryReconnect)
+
+            Closed?.Invoke(this, EventArgs.Empty);
+
+            if (_reconnectEnabled)
             {
-                Reconnect();
+                OnReconnectRequested(StatusCodes.ConnectionClosed);
             }
         }
 
@@ -619,45 +656,17 @@ namespace Suity.Networking
                 AddLog(LogMessageType.Error, exception);
             }
 
-            lock (_lock)
+            Close("Client error");
+
+            if (_reconnectEnabled)
             {
-                if (_disconnectTriggerReconnect && TryReconnect)
+                if (_logErrorEvent)
                 {
-                    if (_logErrorEvent)
-                    {
-                        AddLog(LogMessageType.Error, $"[{Name}] Try reconnect....");
-                    }
-                    Close("Client error");
-                    Reconnect();
+                    AddLog(LogMessageType.Error, $"[{Name}] Try reconnect....");
                 }
-                else
-                {
-                    if (_connectFuture != null)
-                    {
-                        if (_logErrorEvent)
-                        {
-                            AddLog(LogMessageType.Error, $"[{Name}] Report to ConnectFuture.");
-                            AddLog(LogMessageType.Error, $"[{Name}] Has error callback : {_connectFuture._onError != null}");
-                        }
-
-                        ConnectFuture future = _connectFuture;
-                        _connectFuture = null;
-
-                        future._onError?.Invoke(new ErrorResult
-                        {
-                            StatusCode = nameof(StatusCodes.ClientError),
-                            Location = Suity.Environment.Location,
-                        });
-                    }
-                    else
-                    {
-                        if (_logErrorEvent)
-                        {
-                            AddLog(LogMessageType.Error, $"[{Name}] Can not report to ConnectFuture(= null).");
-                        }
-                    }
-                }
+                OnReconnectRequested(StatusCodes.ClientError);
             }
+
         }
 
         protected void NotifyPacket(byte[] data, int offset, int length, NetworkDeliveryMethods method, int channel)
@@ -767,7 +776,24 @@ namespace Suity.Networking
         {
             lock (_lock)
             {
-                _connectFuture = null;
+                if (_connectFuture != null)
+                {
+                    //if (_logErrorEvent)
+                    //{
+                    //    AddLog(LogMessageType.Error, $"[{Name}] Report to ConnectFuture.");
+                    //    AddLog(LogMessageType.Error, $"[{Name}] Has error callback : {_connectFuture._onError != null}");
+                    //}
+
+                    ConnectFuture future = _connectFuture;
+                    _connectFuture = null;
+
+                    future._onError?.Invoke(new ErrorResult
+                    {
+                        StatusCode = nameof(StatusCodes.ConnectionClosed),
+                        Location = Suity.Environment.Location,
+                    });
+                }
+
 
                 ISendFuture[] futures = _sendFutures.ToArray();
                 Array.Clear(_sendFutures, 0, _sendFutures.Length);
