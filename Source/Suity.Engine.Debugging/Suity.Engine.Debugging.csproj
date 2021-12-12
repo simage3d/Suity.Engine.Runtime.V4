@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2DEB6982-9997-44F3-855C-8CD9C2F36784}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Suity</RootNamespace>
+    <AssemblyName>Suity.Engine.Debugging</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <CodeAnalysisRuleSet>..\..\..\Suity4\SourceCode\SuityRuleSet.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Remoting" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Engine.Debugging\ControllerDebugComponent.cs" />
+    <Compile Include="Engine.Debugging\DebugDevice.cs" />
+    <Compile Include="Engine.Debugging\DebugNetworks.cs" />
+    <Compile Include="Engine.Debugging\DebugServiceLocation.cs" />
+    <Compile Include="Engine.Debugging\DebugModuleProvider.cs" />
+    <Compile Include="Engine.Debugging\DebugApplication.cs" />
+    <Compile Include="Engine.Debugging\Debugger.cs" />
+    <Compile Include="Engine.Debugging\DebugNode.cs" />
+    <Compile Include="Engine.Debugging\EmptyMessageModule.cs" />
+    <Compile Include="Engine.Debugging\IDebugHostService.cs" />
+    <Compile Include="Engine.Debugging\LocationHelpers.cs" />
+    <Compile Include="Engine.LocalMessaging\LocalMessageBinding.cs" />
+    <Compile Include="Engine.LocalMessaging\LocalMessageBus.cs" />
+    <Compile Include="Engine.LocalMessaging\LocalMessageHandler.cs" />
+    <Compile Include="Engine.LocalMessaging\LocalMessageModule.cs" />
+    <Compile Include="Engine.LocalMessaging\LocalMessageService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Suity.Engine\Suity.Engine.csproj">
+      <Project>{96b4c97b-1fa0-467d-b435-344e58a1f668}</Project>
+      <Name>Suity.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Suity\Suity.csproj">
+      <Project>{901178ce-6097-48cc-bf30-ea61115abe8f}</Project>
+      <Name>Suity</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
