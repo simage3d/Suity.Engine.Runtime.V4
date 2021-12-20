@@ -66,6 +66,10 @@
       <Project>{96b4c97b-1fa0-467d-b435-344e58a1f668}</Project>
       <Name>Suity.Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Suity.Runtime\Suity.Runtime.csproj">
+      <Project>{9da4a34b-f953-4a07-b37e-9729953cf6ed}</Project>
+      <Name>Suity.Runtime</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Suity\Suity.csproj">
       <Project>{901178ce-6097-48cc-bf30-ea61115abe8f}</Project>
       <Name>Suity</Name>

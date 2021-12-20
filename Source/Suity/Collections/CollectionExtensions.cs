@@ -459,7 +459,12 @@ namespace Suity.Collections
                 return null;
             }
 
-            Type commonType = source.First();
+            Type commonType = source.OfType<Type>().FirstOrDefault();
+            if (commonType is null)
+            {
+                return null;
+            }
+
             foreach (Type o in source.Skip(1))
             {
                 Type curType = o;
@@ -477,7 +482,12 @@ namespace Suity.Collections
                 return null;
             }
 
-            Type commonType = source.First().GetType();
+            Type commonType = source.OfType<object>().FirstOrDefault()?.GetType();
+            if (commonType is null)
+            {
+                return null;
+            }
+
             foreach (object o in source.Skip(1))
             {
                 Type curType = o.GetType();

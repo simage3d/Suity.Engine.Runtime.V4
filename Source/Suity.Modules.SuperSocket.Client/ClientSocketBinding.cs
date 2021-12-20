@@ -5,7 +5,6 @@ using Suity.Helpers;
 using Suity.NodeQuery;
 using Suity.Synchonizing;
 using Suity.Views;
-using Suity.Views.VisionTree;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Suity.Modules
 {
-    class ClientSocketBinding : TcpClient, IModuleBinding, IVisionTreeObject, IInfoNode
+    class ClientSocketBinding : TcpClient, IModuleBinding, IViewObject, IInfoNode
     {
         readonly ModuleConfig _config;
         readonly List<NetworkUpdaterFamily> _updaterFamilies = new List<NetworkUpdaterFamily>();
@@ -41,10 +40,10 @@ namespace Suity.Modules
         }
         #endregion
 
-        #region IVisionTreeObject
-        void IVisionTreeObject.SetupVisionTree(IVisionTreeObjectSetup setup)
+        #region IViewObject
+        void IViewObject.SetupView(IViewObjectSetup setup)
         {
-            setup.AllField(this);
+            setup.AllTreeViewField(this);
         }
 
         void ISyncObject.Sync(IPropertySync sync, ISyncContext context)

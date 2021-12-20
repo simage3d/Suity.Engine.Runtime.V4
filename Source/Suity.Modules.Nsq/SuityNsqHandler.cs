@@ -43,7 +43,7 @@ namespace Suity.Modules.Nsq
 
             public int Channel => 0;
 
-            public string Key => ObjectType.GetClassTypeInfo(typeof(TRequest))?.FullName;
+            public string Key => ObjectType.GetClassTypeInfo(typeof(TRequest))?.Name;
 
             public object Body => _message;
 
@@ -91,7 +91,7 @@ namespace Suity.Modules.Nsq
 
             public int Channel => 0;
 
-            public string Key => ObjectType.GetClassTypeInfo(typeof(TRequest))?.FullName;
+            public string Key => ObjectType.GetClassTypeInfo(typeof(TRequest))?.Name;
 
             public object Body => _message;
 

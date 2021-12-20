@@ -11,12 +11,10 @@ namespace Suity.Modules.Nsq
     class SuityNsqSession : NetworkSession
     {
         readonly IBus _bus;
-        readonly DateTime _startTime;
 
         public SuityNsqSession(IBus bus)
         {
             _bus = bus;
-            _startTime = DateTime.UtcNow;
         }
 
         public override NetworkServer Server => null;
@@ -29,22 +27,10 @@ namespace Suity.Modules.Nsq
 
         public override string SessionId => null;
 
-        public override DateTime StartTime => _startTime;
-
-        public override NetworkUser User { get; set; }
+        public override KeepAliveModes KeepAlive => KeepAliveModes.LongTerm;
 
         public override void Close()
         {
-        }
-
-        public override DateTime GetLastIncomingTime()
-        {
-            return _startTime;
-        }
-
-        public override DateTime GetLastIncomingTime(int channel)
-        {
-            return _startTime;
         }
 
 
@@ -56,7 +42,14 @@ namespace Suity.Modules.Nsq
         public override void Send(object data, NetworkDeliveryMethods method, int channel)
         {
             Logs.AddNetworkLog(LogMessageType.Info, NetworkDirection.Upload, ModuleBindingNames.MessageQueue, string.Empty, data);
-            _bus.Send(data);
+            try
+            {
+                _bus.Send(data);
+            }
+            catch (Exception err)
+            {
+                Logs.LogError(err);
+            }
         }
 
     }

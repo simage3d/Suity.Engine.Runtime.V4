@@ -21,7 +21,7 @@ namespace Suity.Networking.Client
         public TcpClient()
             : base(32, 16)
         {
-            _filter = new SuityPackageFilter();
+            _filter = new SuityPackageFilter(this);
 
             _client = new EasyClient();
             _client.Initialize(_filter, this.NotifyPacket);
@@ -64,6 +64,7 @@ namespace Suity.Networking.Client
 
             byte[] b = _buffer.ToBytes();
             _client.Send(b);
+            ReportDataTraffic(NetworkDirection.Upload, b.Length);
         }
 
         protected override void ClientDisconnect(string reason)
@@ -74,6 +75,11 @@ namespace Suity.Networking.Client
         protected override void ClientShutdown(string reason)
         {
             _client.Close();
+        }
+
+        internal void InternalReportDownloadTraffic(int numBytes)
+        {
+            ReportDataTraffic(NetworkDirection.Download, numBytes);
         }
 
 

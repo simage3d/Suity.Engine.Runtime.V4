@@ -23,9 +23,9 @@ namespace Suity.Modules.Nsq
             {
                 foreach (NetworkCommand command in family.Commands.OfType<NetworkCommand>())
                 {
-                    if (command.RequestType != null && !string.IsNullOrEmpty(command.FullName))
+                    if (command.RequestType != null && !string.IsNullOrEmpty(command.Name))
                     {
-                        string topicName = _domain + "-" + command.FullName.Replace('|', '-').Replace('/', '-');
+                        string topicName = _domain + "-" + command.Name.Replace('|', '-').Replace('/', '-');
 
                         _messageToTopic.Add(command.RequestType, topicName);
                     }                    

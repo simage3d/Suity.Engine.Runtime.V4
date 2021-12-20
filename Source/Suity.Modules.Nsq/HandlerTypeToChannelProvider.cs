@@ -30,7 +30,7 @@ namespace Suity.Modules.Nsq
                     continue;
                 }
 
-                string handlerName = domain + "-" + command.FullName.Replace('|', '-').Replace('/', '-') + "-handler";
+                string handlerName = domain + "-" + command.Name.Replace('|', '-').Replace('/', '-') + "-handler";
 
                 Type handlerType;
 

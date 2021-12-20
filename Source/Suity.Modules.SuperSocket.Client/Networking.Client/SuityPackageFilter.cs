@@ -14,18 +14,23 @@ namespace Suity.Networking.Client
     {
         PacketFormatter _packetFormatter;
 
+        TcpClient _client;
+
         public PacketFormatter Formatter
         {
             get { return _packetFormatter; }
             set { _packetFormatter = value; }
         }
 
-        public SuityPackageFilter()
+
+
+        internal SuityPackageFilter(TcpClient client)
             : base(5)
         {
+            _client = client ?? throw new ArgumentNullException(nameof(client));
         }
-        public SuityPackageFilter(PacketFormatter formatter)
-            : this()
+        internal SuityPackageFilter(TcpClient client, PacketFormatter formatter)
+            : this(client)
         {
         }
 
@@ -39,6 +44,8 @@ namespace Suity.Networking.Client
         {
             int channel = bufferStream.ReadByte();
             int len = bufferStream.ReadInt32(true);
+            _client.InternalReportDownloadTraffic(len + 5);
+
             byte[] bodyBuffer = new byte[len];
             bufferStream.Read(bodyBuffer, 0, len);
 

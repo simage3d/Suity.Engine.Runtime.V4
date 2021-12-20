@@ -13,6 +13,7 @@ using SuperSocket.SocketBase.Protocol;
 using Suity.Reflecting;
 using System.Net;
 using Suity.Modules;
+using Suity.Collections;
 
 namespace Suity.Networking.Server
 {
@@ -33,12 +34,12 @@ namespace Suity.Networking.Server
         }
 
         internal NetworkServer _parentServer;
-        readonly internal ServerSocketSession _proxySession;
+        readonly internal SuperSocketSession _proxySession;
         readonly object _lock = new object();
         readonly BinaryDataWriter _buffer = new BinaryDataWriter();
         bool _commandExecuting;
         readonly List<SendingPackage> _sendings = new List<SendingPackage>();
-        
+
         readonly HashSet<string> _roles = new HashSet<string>();
         readonly Dictionary<Type, object> _properties = new Dictionary<Type, object>();
         DateTime _lastIncomingPackageTime;
@@ -63,7 +64,7 @@ namespace Suity.Networking.Server
 
         public SsAppSession()
         {
-            _proxySession = new ServerSocketSession(this);
+            _proxySession = new SuperSocketSession(this);
         }
 
 
@@ -96,7 +97,7 @@ namespace Suity.Networking.Server
                 {
                     _properties.Remove(typeof(T));
                 }
-            }            
+            }
         }
         public T GetProperty<T>() where T : class
         {
@@ -139,7 +140,7 @@ namespace Suity.Networking.Server
             //base.HandleUnknownRequest(requestInfo);
             Send(new ErrorResult { StatusCode = StatusCodes.UnknownRequest.ToString() }, requestInfo.Method, requestInfo.Channel);
         }
-        
+
         public void Send(object obj, NetworkDeliveryMethods method, int channel)
         {
             if (obj == null)
@@ -371,20 +372,20 @@ namespace Suity.Networking.Server
         private void WritePackage(BinaryDataWriter writer, object obj, NetworkDeliveryMethods method, int channel)
         {
             PackageSender packageSender = _packageSender ?? SetupPackageSender();
-            packageSender.WritePackage(writer, obj, (int)method * ChannelCount + channel);
+            packageSender.WritePackage(writer, obj, method, channel);
         }
         private PackageSender SetupPackageSender()
         {
             SsAppServer server = AppServer as SsAppServer;
             if (server != null)
             {
-                _packageSender = new H5PackageSender(server.PacketFormat, server.Compressed);
+                _packageSender = new H5PackageSender(server.PacketFormat, server.Compressed, server.AesKey);
             }
             else
             {
-                _packageSender = new H5PackageSender(PacketFormats.Binary, false);
+                _packageSender = new H5PackageSender(PacketFormats.Binary, false, null);
             }
-            
+
             return _packageSender;
         }
 

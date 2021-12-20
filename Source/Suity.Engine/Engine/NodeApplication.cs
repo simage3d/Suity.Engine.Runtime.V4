@@ -80,6 +80,18 @@ namespace Suity.Engine
                             Logs.LogError($"IInitialize FAILED : {init.FullName} ({init.Assembly.FullName}).");
                         }
                     }
+                    foreach (Type init in typeof(IRuntimeInitialize).GetDerivedTypes().Where(o => o.IsClass && (!o.IsAbstract)))
+                    {
+                        try
+                        {
+                            Activator.CreateInstance(init);
+                            Logs.LogDebug($"Initialize {init.FullName} ({init.Assembly.FullName}).");
+                        }
+                        catch (Exception)
+                        {
+                            Logs.LogError($"IInitialize FAILED : {init.FullName} ({init.Assembly.FullName}).");
+                        }
+                    }
                 }
                 catch (Exception)
                 {

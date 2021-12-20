@@ -11,6 +11,8 @@ using Suity.Networking;
 using Suity.Helpers;
 using Suity.NodeQuery;
 using Suity.Views;
+using Suity.Collections;
+using NsqSharp.Bus.Configuration.BuiltIn;
 
 namespace Suity.Modules.Nsq
 {
@@ -44,13 +46,45 @@ namespace Suity.Modules.Nsq
             {
                 foreach (NetworkCommand handler in handlers.OfType<NetworkCommand>())
                 {
-                    Logs.LogInfo("Add nsq command handler : " + handler.GetType().Name);
+                    Logs.LogInfo($"Add nsq command handler : {handler.GetType().FullName} ({handler.GetType().Assembly.FullName})");
                     _commands[handler.RequestType] = handler;
                 }
             }
 
             try
             {
+                string[] nsqLookupdAddrs;
+                string configNsqLookupd = Environment.GetConfig("NsqLookupd");
+                if (!string.IsNullOrEmpty(configNsqLookupd))
+                {
+                    nsqLookupdAddrs = configNsqLookupd.Split(',').Select(s => s.Trim()).ToArray();
+                }
+                else
+                {
+                    nsqLookupdAddrs = new[] { "127.0.0.1:4161" };
+                }
+
+                string nsqdTcpAddr = Environment.GetConfig("NsqdTcp");
+                if (string.IsNullOrEmpty(nsqdTcpAddr))
+                {
+                    nsqdTcpAddr = "127.0.0.1:4150";
+                }
+
+                foreach (var addr in nsqLookupdAddrs)
+                {
+                    Logs.LogInfo($"NsqLookupd address : {addr}");
+                }
+                Logs.LogInfo($"Nsqd TCP address : {nsqdTcpAddr}");
+
+                Config nsqConfig = new Config
+                {
+                    // optional override of default config values
+                    MaxRequeueDelay = TimeSpan.FromSeconds(15),
+                    MaxBackoffDuration = TimeSpan.FromSeconds(2),
+                    MaxAttempts = 2
+                };
+                SuityNsqLogger nsqLogger = new SuityNsqLogger();
+
                 // start the bus
                 BusService.Start(new BusConfiguration(
                     new ObjectBuilder(container), // dependency injection container
@@ -59,17 +93,12 @@ namespace Suity.Modules.Nsq
                     new MessageTypeToTopicProvider(Domain, families), // mapping between .NET message types and topics
                     new HandlerTypeToChannelProvider(Domain, handlers), // mapping between IHandleMessages<T> implementations and channels
                     busStateChangedHandler: new BusStateChangedHandler(), // bus starting/started/stopping/stopped
-                    defaultNsqLookupdHttpEndpoints: new[] { "127.0.0.1:4161" }, // nsqlookupd address
+                    defaultNsqLookupdHttpEndpoints: nsqLookupdAddrs, // nsqlookupd address
                     defaultThreadsPerHandler: 1, // threads per handler. tweak based on use case, see handlers in this project.
-                    nsqConfig: new Config
-                    {
-                    // optional override of default config values
-                    MaxRequeueDelay = TimeSpan.FromSeconds(15),
-                        MaxBackoffDuration = TimeSpan.FromSeconds(2),
-                        MaxAttempts = 2
-                    },
-                    nsqLogger: new SuityNsqLogger(), // logger for NSQ events (see also ConsoleLogger, or implement your own)
-                    preCreateTopicsAndChannels: true // pre-create topics so we dont have to wait for an nsqlookupd cycle
+                    nsqConfig: nsqConfig,
+                    nsqLogger: nsqLogger, // logger for NSQ events (see also ConsoleLogger, or implement your own)
+                    nsqdPublisher : new NsqdTcpPublisher(nsqdTcpAddr, nsqLogger, nsqConfig)
+                // preCreateTopicsAndChannels: true // pre-create topics so we dont have to wait for an nsqlookupd cycle
                 ));
             }
             catch (Exception err)
@@ -119,7 +148,15 @@ namespace Suity.Modules.Nsq
         public override void Send<T>(T message)
         {
             Logs.AddNetworkLog(LogMessageType.Info, NetworkDirection.Upload, ModuleBindingNames.MessageQueue, string.Empty, message);
-            _bus.Send(message);
+
+            try
+            {
+                _bus.Send(message);
+            }
+            catch (Exception err)
+            {
+                Logs.LogError(err);
+            }
         }
 
 

@@ -69,27 +69,7 @@ namespace Suity.NodeQuery
         }
 
 
-        public static void WriteObjectInfo(this INodeWriter writer, object obj, string name = null)
-        {
-            if (obj == null)
-            {
-                writer.WriteInfo(name, name, "null");
-            }
-            else if (obj is string)
-            {
-                writer.WriteInfo(name, name, $"\"{obj}\"");
-            }
-            if (ObjectType.GetClassTypeInfo(obj.GetType()) != null)
-            {
-                JsonDataWriter jsonWriter = new JsonDataWriter();
-                ObjectType.WriteObject(jsonWriter, obj);
-                WriteJsonInfo(writer, jsonWriter.Value, name);
-            }
-            else
-            {
-                writer.WriteInfo(name, name, obj.ToString());
-            }
-        }
+
         public static void WriteJsonInfo(this INodeWriter writer, object obj, string name = null)
         {
             if (string.IsNullOrEmpty(name))

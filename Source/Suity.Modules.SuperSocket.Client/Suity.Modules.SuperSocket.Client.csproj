@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Suity.Engine.Editor\EditorBin\Modules\SuperSocket.Client\</OutputPath>
+    <OutputPath>..\..\Bin\Modules\SuperSocket.Client\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,14 +30,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Suity, Version=3.2.16.19064, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Suity\bin\Debug\netstandard2.0\Suity.dll</HintPath>
-    </Reference>
-    <Reference Include="Suity.Engine, Version=3.2.16.19064, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Suity.Engine\bin\Debug\Suity.Engine.dll</HintPath>
-    </Reference>
     <Reference Include="SuperSocket.ClientEngine, Version=0.8.0.14, Culture=neutral, PublicKeyToken=ee9af13f57f00acc, processorArchitecture=MSIL">
       <HintPath>..\packages\SuperSocket.ClientEngine.0.8.0.14\lib\net45\SuperSocket.ClientEngine.dll</HintPath>
     </Reference>
@@ -91,5 +83,24 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Suity.Engine.Runtime.V4\Source\Suity.Engine\Suity.Engine.csproj">
+      <Project>{96b4c97b-1fa0-467d-b435-344e58a1f668}</Project>
+      <Name>Suity.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Suity.Engine.Runtime.V4\Source\Suity.Runtime\Suity.Runtime.csproj">
+      <Project>{6d9a2fc2-e9bb-4687-8823-adba54e64f28}</Project>
+      <Name>Suity.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Suity.Engine.Runtime.V4\Source\Suity\Suity.csproj">
+      <Project>{574af2f1-55e7-4c1b-b32d-423d679d408b}</Project>
+      <Name>Suity</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_StartDate="2000/1/1" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

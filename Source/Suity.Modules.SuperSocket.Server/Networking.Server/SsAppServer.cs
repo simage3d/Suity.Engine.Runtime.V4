@@ -10,6 +10,8 @@ using Suity.Collections;
 using System.Net;
 using Suity.Helpers;
 using Suity.Engine;
+using Suity.Crypto;
+using System.Security.Cryptography;
 
 namespace Suity.Networking.Server
 {
@@ -17,16 +19,18 @@ namespace Suity.Networking.Server
     {
         readonly PacketFormats _format;
         readonly bool _compressed;
+        readonly AesKey _aesKey;
 
-        public SuityPackageFilterFactory(PacketFormats format, bool compressed)
+        public SuityPackageFilterFactory(PacketFormats format, bool compressed, AesKey aesKey = null)
         {
             _format = format;
             _compressed = compressed;
+            _aesKey = aesKey;
         }
 
         public IReceiveFilter<SsRequestInfo> CreateFilter(IAppServer appServer, IAppSession appSession, IPEndPoint remoteEndPoint)
         {
-            return new H5PackageFilter(_format, _compressed);
+            return new H5PackageFilter(_format, _compressed, _aesKey);
         }
     }
 
@@ -35,22 +39,25 @@ namespace Suity.Networking.Server
     {
         public delegate object ServiceResolve(Type type);
 
-       
+
         public ServiceResolve ResolveService;
-        public PacketFormats PacketFormat { get; private set; }
-        public bool Compressed { get; private set; }
+        public PacketFormats PacketFormat { get; }
+        public bool Compressed { get; }
+        public AesKey AesKey { get; }
 
         readonly ConcurrentDictionary<Type, object> _services = new ConcurrentDictionary<Type, object>();
         readonly Dictionary<string, NetworkCommand> _commands = new Dictionary<string, NetworkCommand>();
         IBehaviorLog _behaviorLog;
-        
 
-        public SsAppServer(PacketFormats packetFormat, bool compressed)
-            : base(new SuityPackageFilterFactory(packetFormat, compressed))
+
+        public SsAppServer(PacketFormats packetFormat, bool compressed, AesKey aesKey = null)
+            : base(new SuityPackageFilterFactory(packetFormat, compressed, aesKey))
         {
             PacketFormat = packetFormat;
             Compressed = compressed;
-            ResultFormatter.Initialize();
+            AesKey = aesKey;
+
+            SuityFormatter.Initialize();
         }
 
         public void RegisterCommandFamily(NetworkCommandFamily family)
@@ -67,7 +74,7 @@ namespace Suity.Networking.Server
                 }
                 if (!string.IsNullOrEmpty(command.Method))
                 {
-                    Logs.LogWarning($"Ingored command {command.FullName} which defines a method : {command.Method}.");
+                    Logs.LogWarning($"Ingored command {command.Name} which defines a method : {command.Method}.");
                     continue;
                 }
 
@@ -122,6 +129,9 @@ namespace Suity.Networking.Server
         }
         protected override void OnSessionClosed(SsAppSession session, CloseReason reason)
         {
+            //反编译查看过Session的StartTime是DateTime.Now
+            session._proxySession?.ReportUserLogout();
+
             BehaviorLog.LogSessionClosed(session._proxySession, reason.ToString());
             Logs.AddNetworkLog(LogMessageType.Info, NetworkDirection.None, session.RemoteEndPoint.ToString(), null, $"Session closed : {session.RemoteEndPoint} ({reason})");
             base.OnSessionClosed(session, reason);
@@ -137,7 +147,13 @@ namespace Suity.Networking.Server
                 if (command != null)
                 {
                     var result = command.ExecuteCommand(session._proxySession, requestInfo);
-                    if (result != null)
+                    if (result is IFuture future)
+                    {
+                        future
+                            .OnResult(o => session.Send(o, requestInfo.Method, requestInfo.Channel))
+                            .OnError(err => session.Send(err, requestInfo.Method, requestInfo.Channel));
+                    }
+                    else if (result != null)
                     {
                         session.Send(result, requestInfo.Method, requestInfo.Channel);
                     }

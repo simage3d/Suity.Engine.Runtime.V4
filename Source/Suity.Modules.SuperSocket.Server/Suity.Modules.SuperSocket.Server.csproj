@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\Suity.Engine.Editor\EditorBin\Modules\SuperSocket.Server\</OutputPath>
+    <OutputPath>..\..\Bin\Modules\SuperSocket.Server\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -33,14 +33,6 @@
   <ItemGroup>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
-    </Reference>
-    <Reference Include="Suity, Version=3.2.16.19064, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Suity\bin\Debug\netstandard2.0\Suity.dll</HintPath>
-    </Reference>
-    <Reference Include="Suity.Engine, Version=3.2.16.19064, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Suity.Engine\bin\Debug\Suity.Engine.dll</HintPath>
     </Reference>
     <Reference Include="SuperSocket.Common, Version=1.6.6.1, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
       <HintPath>..\packages\SuperSocket.1.6.6.1\lib\net45\SuperSocket.Common.dll</HintPath>
@@ -87,7 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Networking.Server\PackageSenders.cs" />
-    <Compile Include="ServerSocketBinding.cs" />
+    <Compile Include="SuperSocketBinding.cs" />
     <Compile Include="Networking.Server\EmptyBehaviorLog.cs" />
     <Compile Include="Networking.Server\ISocketConfigProvider.cs" />
     <Compile Include="Networking.Server\LoggedInValidationFilter.cs" />
@@ -104,8 +96,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ServerSocketModule.cs" />
-    <Compile Include="ServerSocketSession.cs" />
+    <Compile Include="SuperSocketModule.cs" />
+    <Compile Include="SuperSocketSession.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -121,7 +113,26 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Suity.Engine.Runtime.V4\Source\Suity.Engine\Suity.Engine.csproj">
+      <Project>{96b4c97b-1fa0-467d-b435-344e58a1f668}</Project>
+      <Name>Suity.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Suity.Engine.Runtime.V4\Source\Suity.Runtime\Suity.Runtime.csproj">
+      <Project>{6d9a2fc2-e9bb-4687-8823-adba54e64f28}</Project>
+      <Name>Suity.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Suity.Engine.Runtime.V4\Source\Suity\Suity.csproj">
+      <Project>{574af2f1-55e7-4c1b-b32d-423d679d408b}</Project>
+      <Name>Suity</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties BuildVersion_StartDate="2000/1/1" />
+    </VisualStudio>
+  </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

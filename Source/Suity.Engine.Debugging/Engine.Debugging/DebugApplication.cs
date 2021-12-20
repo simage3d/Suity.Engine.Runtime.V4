@@ -184,7 +184,13 @@ namespace Suity.Engine.Debugging
 
             try
             {
-                return _instanceService.GetService(serviceType);
+                result = _instanceService.GetService(serviceType);
+                if (result != null)
+                {
+                    Logs.LogInfo($"Get service from editor : {serviceType.FullName} - {result.GetType().FullName}");
+                }
+
+                return result;
             }
             catch (Exception)
             {

@@ -55,6 +55,10 @@ namespace Suity.Crypto
             Iv = Encoding.ASCII.GetBytes(IvPart);
         }
 
+        public byte[] GetKey() => Key.ToArray();
+        public byte[] GetIv() => Iv.ToArray();
+
+
         static Random _rnd = new Random();
         static char[] Chars = {
             'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',

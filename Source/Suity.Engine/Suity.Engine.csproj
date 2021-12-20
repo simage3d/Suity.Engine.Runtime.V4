@@ -70,9 +70,6 @@
     <Compile Include="Engine\BaseModuleProvider.cs" />
     <Compile Include="Engine\CommandNotImplementedException.cs" />
     <Compile Include="Engine\ConsoleCommands.cs" />
-    <Compile Include="Engine\IEntityLog.cs" />
-    <Compile Include="Engine\IOperationLog.cs" />
-    <Compile Include="Engine\IResourceLog.cs" />
     <Compile Include="Engine\IStellarService.cs" />
     <Compile Include="Engine\MessageQueue.cs" />
     <Compile Include="Engine\ModuleBindingNames.cs" />
@@ -90,7 +87,6 @@
     <Compile Include="Engine\IModuleBinding.cs" />
     <Compile Include="Engine\IModuleProvider.cs" />
     <Compile Include="Engine\InvalidModuleBindingException.cs" />
-    <Compile Include="Engine\IRuntimeLog.cs" />
     <Compile Include="Engine\NodeApplication.cs" />
     <Compile Include="Engine\NodeComponent.cs" />
     <Compile Include="Engine\NodeObject.cs" />
@@ -131,65 +127,17 @@
     <Compile Include="Networking\ServerSocketComponent.cs" />
     <Compile Include="Networking\SessionAutoKickComponent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reflecting\ActivatorHelper.cs" />
-    <Compile Include="Reflecting\AssemblyShortTypeName.cs" />
-    <Compile Include="Reflecting\BindingFlagsPreset.cs" />
-    <Compile Include="Reflecting\TypeInfoString.cs" />
-    <Compile Include="Reflecting\TypeResolveHelper.cs" />
     <Compile Include="RoomSystem\BackgroundActionQueue.cs" />
     <Compile Include="RoomSystem\Room.cs" />
     <Compile Include="RoomSystem\RoomExtensions.cs" />
     <Compile Include="Helpers\SingleThreadActionQueue.cs" />
     <Compile Include="RoomSystem\SimpleRoomComponent.cs" />
-    <Compile Include="Synchonizing.Core\Cloner.cs" />
-    <Compile Include="Synchonizing.Core\ClonerSyncs.cs" />
-    <Compile Include="Synchonizing.Core\DefaultSyncTypeResolver.cs" />
-    <Compile Include="Synchonizing.Core\Equality.cs" />
-    <Compile Include="Synchonizing.Core\FindOption.cs" />
-    <Compile Include="Synchonizing.Core\GenericListProxy.cs" />
-    <Compile Include="Synchonizing.Core\IListItemNotify.cs" />
-    <Compile Include="Synchonizing.Core\ISerializeAsString.cs" />
-    <Compile Include="Synchonizing.Core\ISyncPathIdObject.cs" />
-    <Compile Include="Synchonizing.Core\ISyncPathObject.cs" />
-    <Compile Include="Synchonizing.Core\ISyncStateRecord.cs" />
-    <Compile Include="Synchonizing.Core\ISyncTypeResolver.cs" />
-    <Compile Include="Synchonizing.Core\IValidate.cs" />
-    <Compile Include="Synchonizing.Core\Member.cs" />
-    <Compile Include="Synchonizing.Core\Serializer.cs" />
-    <Compile Include="Synchonizing.Core\SerializerSyncs.cs" />
-    <Compile Include="Synchonizing.Core\SyncListProxy.cs" />
-    <Compile Include="Synchonizing.Core\SyncObjectProxy.cs" />
-    <Compile Include="Synchonizing.Core\SyncPath.cs" />
-    <Compile Include="Synchonizing.Core\SyncPathBuilder.cs" />
-    <Compile Include="Synchonizing.Core\SyncPathReportItem.cs" />
-    <Compile Include="Synchonizing.Core\SyncProxyUsageAttribute.cs" />
-    <Compile Include="Synchonizing.Core\SyncTypeExtensions.cs" />
-    <Compile Include="Synchonizing.Core\TypeResolveException.cs" />
-    <Compile Include="Synchonizing.Core\ValidationContext.cs" />
-    <Compile Include="Synchonizing.Core\Validator.cs" />
-    <Compile Include="Synchonizing.Core\VisitFlag.cs" />
-    <Compile Include="Synchonizing.Core\Visitor.cs" />
-    <Compile Include="Synchonizing.Core\XmlSerializer.cs" />
-    <Compile Include="Synchonizing.Preset\DeserializeSyncTypeResolver.cs" />
-    <Compile Include="Synchonizing.Preset\EmptySyncList.cs" />
-    <Compile Include="Synchonizing.Preset\EmptySyncObject.cs" />
-    <Compile Include="Synchonizing.Preset\EmptyTypeResolver.cs" />
-    <Compile Include="Synchonizing.Preset\GetAllIndexSync.cs" />
-    <Compile Include="Synchonizing.Preset\GetAllPropertySync.cs" />
-    <Compile Include="Synchonizing.Preset\GetFieldsPropertySync.cs" />
-    <Compile Include="Synchonizing.Preset\InitializeIndexSync.cs" />
-    <Compile Include="Synchonizing.Preset\InitializePropertySync.cs" />
-    <Compile Include="Synchonizing.Preset\ReadonlySyncList.cs" />
-    <Compile Include="Synchonizing.Preset\SingleAttributeSync.cs" />
-    <Compile Include="Synchonizing.Preset\SingleIndexSync.cs" />
-    <Compile Include="Synchonizing.Preset\SingleIndexSyncExtensions.cs" />
-    <Compile Include="Synchonizing.Preset\SinglePropertySync.cs" />
-    <Compile Include="Synchonizing.Preset\SinglePropertySyncExtensions.cs" />
-    <Compile Include="Synchonizing.Preset\SyncContext.cs" />
-    <Compile Include="Synchonizing.Preset\SyncList.cs" />
-    <Compile Include="Synchonizing.Preset\SyncValueInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Suity.Runtime\Suity.Runtime.csproj">
+      <Project>{9da4a34b-f953-4a07-b37e-9729953cf6ed}</Project>
+      <Name>Suity.Runtime</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Suity\Suity.csproj">
       <Project>{901178ce-6097-48cc-bf30-ea61115abe8f}</Project>
       <Name>Suity</Name>

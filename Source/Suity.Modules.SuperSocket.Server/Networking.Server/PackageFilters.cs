@@ -9,6 +9,7 @@ using SuperSocket.Common;
 using SuperSocket.Facility.Protocol;
 using SuperSocket.SocketBase.Protocol;
 using LZ4;
+using Suity.Crypto;
 
 namespace Suity.Networking.Server
 {
@@ -16,10 +17,10 @@ namespace Suity.Networking.Server
     {
         readonly PacketFormatter _packetFormatter;
 
-        public H5PackageFilter(PacketFormats packetFormat, bool compressed)
+        public H5PackageFilter(PacketFormats packetFormat, bool compressed, AesKey aesKey)
             : base(5)
         {
-            _packetFormatter = PacketFormatter.CreatePacketFormatter(packetFormat, compressed) ?? throw new ArgumentException(nameof(packetFormat));
+            _packetFormatter = PacketFormatter.CreatePacketFormatter(packetFormat, compressed, aesKey) ?? throw new ArgumentException(nameof(packetFormat));
         }
 
 

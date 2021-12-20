@@ -7,43 +7,16 @@ using System.Text;
 
 namespace Suity
 {
-    public interface IExchangableObject
-    {
-        void ExchangeProperty(IExchange exchange);
-    }
-
     public interface IExchange
     {
         object Exchange(string name, object value);
-    }
-
-    public static class ExchangeExtensions
-    {
-        public static IEnumerable<string> GetPropertyNames(this IExchangableObject obj)
-        {
-            EnumPropertyExchange ex = new EnumPropertyExchange();
-            obj.ExchangeProperty(ex);
-            return ex.Names;
-        }
-        public static object GetProperty(this IExchangableObject obj, string propertyName)
-        {
-            GetPropertyExchange ex = new GetPropertyExchange(propertyName);
-            obj.ExchangeProperty(ex);
-            return ex.Value;
-        }
-        public static void SetProperty(this IExchangableObject obj, string propertyName, object value)
-        {
-            SetPropertyExchange ex = new SetPropertyExchange(propertyName, value);
-            obj.ExchangeProperty(ex);
-        }
-
     }
 
 
 #if BRIDGE
     class GetPropertyExchange : IExchange
 #else
-    class GetPropertyExchange : MarshalByRefObject, IExchange
+    public class GetPropertyExchange : MarshalByRefObject, IExchange
 #endif
     {
         public string Name { get; }
@@ -67,7 +40,7 @@ namespace Suity
 #if BRIDGE
     class SetPropertyExchange : IExchange
 #else
-    class SetPropertyExchange : MarshalByRefObject, IExchange
+    public class SetPropertyExchange : MarshalByRefObject, IExchange
 #endif
     {
         public string Name { get; }
@@ -96,7 +69,7 @@ namespace Suity
 #if BRIDGE
     class EnumPropertyExchange : IExchange
 #else
-    class EnumPropertyExchange : MarshalByRefObject, IExchange
+    public class EnumPropertyExchange : MarshalByRefObject, IExchange
 #endif
     {
         public List<string> Names { get; }
