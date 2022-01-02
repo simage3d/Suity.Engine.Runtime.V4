@@ -20,7 +20,7 @@ using Suity.Views;
 
 namespace Suity.Engine.Debugging
 {
-    #region EditorDebugApplication
+    #region DebugApplication
     class DebugApplication : NodeApplication
     {
         readonly IDebugHostService _hostService;
@@ -30,7 +30,6 @@ namespace Suity.Engine.Debugging
         readonly internal DebugModuleProvider _moduleProvider;
 
         readonly Queue<Action> _actionQueue = new Queue<Action>();
-
 
         bool _exiting;
 

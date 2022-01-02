@@ -420,6 +420,6 @@ namespace Suity.Rex.VirtualDom
             return _listeners ?? (_listeners = new Dictionary<Delegate, RexNodeListener>());
         }
 
-        private static readonly Pool<List<RexNodeListener>> _listPool = new Pool<List<RexNodeListener>>();
+        static readonly Pool<List<RexNodeListener>> _listPool = new Pool<List<RexNodeListener>>();
     }
 }

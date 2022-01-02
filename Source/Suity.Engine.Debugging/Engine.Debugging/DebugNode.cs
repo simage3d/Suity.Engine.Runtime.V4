@@ -47,6 +47,7 @@ namespace Suity.Engine.Debugging
             _timer = new Timer(CheckLifeTime, null, AliveCheckStartTimeSpan, AliveCheckTimeSpan);
         }
 
+
         #region IDebugNode
         public string NodeId => _info.NodeId;
 

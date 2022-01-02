@@ -568,7 +568,7 @@ namespace Suity.Engine
     class ReloadCommand : ConsoleCommand
     {
         public ReloadCommand()
-            : base("reload", null, "Reload all data from editor.")
+            : base("reload", null, "Reload all data from data source.")
         {
         }
         public override void ExecuteComand(string[] args)

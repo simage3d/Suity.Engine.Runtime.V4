@@ -34,19 +34,9 @@ namespace Suity.Engine.Debugging
 
         protected override Module ResolveBuildInModule(string moduleName)
         {
-            switch (moduleName)
+            if (moduleName == ModuleBindingNames.MessageQueue)
             {
-                case ModuleBindingNames.MessageQueue:
-                    if (LocalMessageQueue)
-                    {
-                        return LocalMessageModule.Instance;
-
-                        //return EmptyMessageModule.Empty;
-                        //return _debugInstance.BindBuildInModule(moduleName);
-                    }
-                    break;
-                default:
-                    break;
+                return LocalMessageModule.Instance;
             }
 
             return base.ResolveBuildInModule(moduleName);
