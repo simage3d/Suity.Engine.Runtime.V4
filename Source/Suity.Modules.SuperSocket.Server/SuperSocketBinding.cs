@@ -123,7 +123,7 @@ namespace Suity.Modules
                 return;
             }
 
-            Logs.LogInfo($"EditorSocketServer is listening on 127.0.0.1:{port}");
+            Logs.LogInfo($"SuperSocket is listening on {ip}:{port}");
         }
 
         public override void Stop()
