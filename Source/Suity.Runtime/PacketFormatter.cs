@@ -16,7 +16,7 @@ namespace Suity
     {
         [MultiThreadSecurity(MultiThreadSecurityMethods.ReadonlySecure)]
         public abstract bool Decode(byte[] data, int offset, int length, ref string typeName, ref object obj);
-        [MultiThreadSecurity(MultiThreadSecurityMethods.LockedSecure)]
+        [MultiThreadSecurity(MultiThreadSecurityMethods.PerThreadSecure)]
         public abstract void Encode(BinaryDataWriter writer, object obj);
 
         public static PacketFormatter CreatePacketFormatter(PacketFormats packetFormat)
@@ -178,7 +178,8 @@ namespace Suity
 
     class BsonPacketFormatter : PacketFormatter
     {
-        readonly BsonDataWriter _bsonWriter = new BsonDataWriter();
+        [ThreadStatic]
+        static BsonDataWriter _bsonWriter;
 
         public override bool Decode(byte[] data, int offset, int length, ref string typeName, ref object obj)
         {
@@ -198,12 +199,11 @@ namespace Suity
         {
             byte[] bytes;
 
-            lock (_bsonWriter)
-            {
-                _bsonWriter.Reset();
-                ObjectType.WriteObject(_bsonWriter, obj);
-                bytes = _bsonWriter.ToBytes();
-            }
+            var bsonWriter = _bsonWriter ?? (_bsonWriter = new BsonDataWriter());
+
+            bsonWriter.Reset();
+            ObjectType.WriteObject(bsonWriter, obj);
+            bytes = bsonWriter.ToBytes();
 
             writer.WriteRawBytes(bytes, 0, bytes.Length);
         }
@@ -211,7 +211,8 @@ namespace Suity
 
     class JsonPacketFormatter : PacketFormatter
     {
-        readonly JsonDataWriter _jsonWriter = new JsonDataWriter();
+        [ThreadStatic]
+        static JsonDataWriter _jsonWriter;
 
         public override bool Decode(byte[] data, int offset, int length, ref string typeName, ref object obj)
         {
@@ -232,13 +233,12 @@ namespace Suity
         {
             byte[] bytes;
 
-            lock (_jsonWriter)
-            {
-                _jsonWriter.Reset();
-                ObjectType.WriteObject(_jsonWriter, obj);
-                string str = _jsonWriter.ToString(false);
-                bytes = Encoding.UTF8.GetBytes(str);
-            }
+            var jsonWriter = _jsonWriter ?? (_jsonWriter = new JsonDataWriter());
+
+            jsonWriter.Reset();
+            ObjectType.WriteObject(jsonWriter, obj);
+            string str = jsonWriter.ToString(false);
+            bytes = Encoding.UTF8.GetBytes(str);
 
             writer.WriteRawBytes(bytes, 0, bytes.Length);
         }
